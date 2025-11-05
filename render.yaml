@@ -1,0 +1,50 @@
+services:
+  # Backend API Service
+  - type: web
+    name: tims-backend
+    runtime: node
+    plan: free
+    repo: https://github.com/your-username/TIM
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DB_HOST
+        fromDatabase:
+          name: tims-database
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: tims-database
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: tims-database
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: tims-database
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: tims-database
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://your-frontend-domain.vercel.app
+
+  # MySQL Database
+  - type: pserv
+    name: tims-database
+    plan: free
+    databaseName: tims_hackathon
+    user: tims_user
+    version: "8.0"
